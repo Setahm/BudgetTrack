@@ -1,0 +1,365 @@
+﻿@model BudgetTrack.Models.Company
+
+<div class="dashboard">
+
+    <!-- Header -->
+    <div class="header fade-in">
+        <div>
+            <p>لوحة تحكم الشركة</p>
+        </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+
+        <div class="kpi-card fade-up">
+            <div class="icon blue">🏢</div>
+            <div>
+                <p class="label">عدد الأقسام</p>
+                <h2 class="value">@((Model.Departments?.Count() ?? 0))</h2>
+            </div>
+        </div>
+
+        <div class="kpi-card fade-up">
+            <div class="icon green">💰</div>
+            <div>
+                <p class="label">إجمالي الميزانيات</p>
+                <h2 class="value">
+                    @(
+                    Model.Departments != null
+                     ? Model.Departments.Sum(d => d.AnnualBudget).ToString("N0") + " ﷼"  : "0 ﷼"
+                     )
+                </h2>
+            </div>
+        </div>
+
+        <a href="@Url.Action("Predictions", "CompanyDashboard", new { id = Model.Id })"
+           class="kpi-card fade-up link">
+            <div class="icon purple">📊</div>
+            <div>
+                <p class="label">التنبؤ بالميزانية</p>
+                <h2 class="value small">عرض التنبؤ</h2>
+            </div>
+        </a>
+
+        <a href="@Url.Action("CompanyDetails", "CompanyDashboard", new { id = Model.Id })"
+           class="kpi-card fade-up link">
+            <div class="icon dark">📄</div>
+            <div>
+                <p class="label">تفاصيل الشركة</p>
+                <h2 class="value small">عرض التفاصيل</h2>
+            </div>
+        </a>
+
+    </div>
+
+    <!-- Section Header -->
+    <div class="section-header fade-in">
+        <h3>الأقسام</h3>
+        <a href="@Url.Action("Create", "Departments")" class="add-btn">+ إضافة قسم</a>
+    </div>
+
+    <!-- Table -->
+    @if (Model.Departments != null && Model.Departments.Any())
+    {
+        <div class="table-wrapper fade-in">
+            <table class="styled-table">
+                <thead>
+                    <tr>
+                        <th>اسم القسم</th>
+                        <th>السنة</th>
+                        <th>الميزانية</th>
+                        <th>مصروفات القسم</th>
+                        <th>إجراءات</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var dept in Model.Departments)
+                    {
+                        <tr>
+                            <td>@dept.Name</td>
+                            <td>@dept.Year</td>
+                            <td>@dept.AnnualBudget.ToString("N0") ﷼</td>
+
+                            <td>
+                                <a href="@Url.Action("Index", "Expenses", new { departmentId = dept.Id })"
+                                   class="action-btn view">عرض المصروفات</a>
+                            </td>
+
+                            <td>
+                                <a href="@Url.Action("Edit", "Departments", new { id = dept.Id })"
+                                   class="action-btn edit">تعديل</a>
+
+                                <a href="@Url.Action("Delete", "Departments", new { id = dept.Id })"
+                                   class="action-btn delete">حذف</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <p class="empty fade-in">لا توجد أقسام مسجلة.</p>
+    }
+
+</div>
+
+<style>
+
+    /* Background */
+    body {
+        background: #0f0f12;
+        font-family: 'Tajawal', sans-serif;
+        color: #e5e7eb;
+    }
+
+    .dashboard {
+        padding: 40px;
+    }
+
+    /* Header */
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 35px;
+    }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #a78bfa;
+        }
+
+        .header p {
+            color: lightskyblue;
+            margin-top: -4px;
+            text-align: center; 
+            font-size: 20px; 
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            /* وهج ناعم */
+            text-shadow: 0 0 8px #60a5fa;
+        }
+
+    .header-btn {
+        background: linear-gradient(135deg, #7c3aed, #a78bfa);
+        padding: 10px 20px;
+        border-radius: 12px;
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.3s ease;
+    }
+
+        .header-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(167,139,250,0.4);
+        }
+
+    /* KPI Cards */
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 22px;
+        margin-bottom: 40px;
+    }
+
+    .kpi-card {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.06);
+        padding: 22px;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        transition: 0.35s ease;
+        backdrop-filter: blur(14px);
+    }
+
+        /* Hover Glow */
+        .kpi-card:hover {
+            transform: translateY(-6px);
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(167,139,250,0.45);
+            box-shadow: 0 0 22px rgba(167,139,250,0.25);
+        }
+
+    .icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        transition: 0.3s ease;
+    }
+
+    .kpi-card:hover .icon {
+        transform: scale(1.08);
+    }
+
+    .blue {
+        background: rgba(96,165,250,0.15);
+        color: #60a5fa;
+    }
+
+    .green {
+        background: rgba(52,211,153,0.15);
+        color: #34d399;
+    }
+
+    .purple {
+        background: rgba(167,139,250,0.15);
+        color: #a78bfa;
+    }
+
+    .dark {
+        background: rgba(156,163,175,0.15);
+        color: #d1d5db;
+    }
+
+    .label {
+        font-size: 14px;
+        color: #9ca3af;
+    }
+
+    .value {
+        font-size: 24px;
+        font-weight: 700;
+        margin-top: 4px;
+    }
+
+        .value.small {
+            font-size: 18px;
+        }
+
+    .link {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    /* Section Header */
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+    }
+
+    .add-btn {
+        background: #3b82f6;
+        padding: 10px 18px;
+        border-radius: 12px;
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.3s ease;
+    }
+
+        .add-btn:hover {
+            background: rgba(59,130,246,0.5);
+        }
+
+    /* Table */
+    .table-wrapper {
+        background: rgba(255,255,255,0.03);
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .styled-table th {
+            background: rgba(255,255,255,0.05);
+            padding: 14px;
+            color: #cbd5e1;
+            font-size: 14px;
+            text-align: right;
+        }
+
+        .styled-table td {
+            padding: 14px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+    /* Buttons with LIFE */
+    .action-btn {
+        display: inline-block;
+        padding: 10px 18px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        color: white;
+        transition: 0.3s ease;
+        margin: 4px;
+        position: relative;
+        z-index: 1;
+    }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 14px rgba(255,255,255,0.2);
+        }
+
+    .view {
+        background: #3b82f6;
+    }
+
+        .view:hover {
+            box-shadow: 0 0 16px rgba(59,130,246,0.5);
+        }
+
+    .edit {
+        background: #facc15;
+        color: #1f2937;
+    }
+
+        .edit:hover {
+            box-shadow: 0 0 16px rgba(250,204,21,0.5);
+        }
+
+    .delete {
+        background: #ef4444;
+    }
+
+        .delete:hover {
+            box-shadow: 0 0 16px rgba(239,68,68,0.5);
+        }
+
+    .empty {
+        color: #6b7280;
+        margin-top: 10px;
+    }
+
+    /* Animations */
+    @@keyframes fade-up {
+        from {
+            opacity: 0;
+            transform: translateY(12px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .fade-up {
+        animation: fade-up 0.6s ease;
+    }
+
+    .fade-in {
+        animation: fade-up 0.6s ease;
+    }
+
+</style>

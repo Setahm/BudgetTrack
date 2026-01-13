@@ -1,0 +1,9 @@
+﻿public IActionResult Index()
+{
+    var companyIdString = HttpContext.Session.GetString("CompanyId");
+
+    if (!int.TryParse(companyIdString, out int companyId))
+        return Unauthorized();
+
+    return RedirectToAction("CompanyHome", new { id = companyId });
+}

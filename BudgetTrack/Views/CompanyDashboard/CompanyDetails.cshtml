@@ -1,0 +1,400 @@
+﻿@model BudgetTrack.ViewModels.CompanyDetailsViewModel
+@using System.Text.Json
+
+<div class="dashboard">
+
+    <!-- العنوان -->
+    <div class="header fade-in">
+        <h2>تفاصيل الشركة</h2>
+    </div>
+
+    <!-- الكروت -->
+    <div class="card-grid">
+
+        <div class="info-card violet">
+            <div class="icon">🏢</div>
+            <div class="text">
+                <p class="title">عدد الأقسام</p>
+                <p class="desc">@Model.Departments.Count</p>
+            </div>
+        </div>
+
+        <div class="info-card green">
+            <div class="icon">💰</div>
+            <div class="text">
+                <p class="title">إجمالي الميزانية</p>
+                <p class="desc">@Model.Departments.Sum(d => d.AnnualBudget).ToString("N0") ﷼</p>
+            </div>
+        </div>
+
+        <div class="info-card blue">
+            <div class="icon">📉</div>
+            <div class="text">
+                <p class="title">إجمالي المصروفات</p>
+                <p class="desc">@Model.Departments.Sum(d => d.TotalExpenses).ToString("N0") ﷼</p>
+            </div>
+        </div>
+
+        <div class="info-card gray">
+            <div class="icon">📊</div>
+            <div class="text">
+                <p class="title">المتبقي</p>
+                <p class="desc">@Model.Departments.Sum(d => d.AnnualBudget - d.TotalExpenses).ToString("N0") ﷼</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- التشارت + الجدول -->
+    <div class="split-section">
+
+        <!-- التشارت -->
+        <div class="box chart-box fade-in">
+            <h4>تحليل الميزانية حسب الأقسام</h4>
+            <canvas id="budgetChart"></canvas>
+        </div>
+
+        <!-- الجدول -->
+        <div class="box table-box fade-in">
+            <table class="styled-table" id="deptTable">
+                <thead>
+                    <tr>
+                        <th>القسم</th>
+                        <th>الميزانية</th>
+                        <th>المصروف</th>
+                        <th>المتبقي</th>
+                        <th>النسبة</th>
+                        <th>مصروفات القسم</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var dept in Model.Departments)
+                    {
+                        <tr>
+                            <td>@dept.Name</td>
+                            <td>@dept.AnnualBudget.ToString("N0") ﷼</td>
+                            <td>@dept.TotalExpenses.ToString("N0") ﷼</td>
+                            <td>@dept.Remaining.ToString("N0") ﷼</td>
+                            <td>@($"{dept.SpendingPercentage:F2} %")</td>
+                            <td>
+                                <a href="@Url.Action("Index", "Expenses", new { departmentId = dept.DepartmentId })"
+                                   class="action-btn view">عرض المصروفات</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="button-row fade-in">
+        <a href="@Url.Action("Index", "CompanyDashboard")" class="back-btn">رجوع</a>
+        <button id="exportExcel" class="excel-btn">تصدير Excel</button>
+    </div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- SheetJS (Excel) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+    // =======================
+    //  تصدير Excel
+    // =======================
+    document.getElementById("exportExcel").addEventListener("click", function () {
+
+        var table = document.getElementById("deptTable");
+        var wb = XLSX.utils.table_to_book(table, { sheet: "الأقسام" });
+        XLSX.writeFile(wb, "تفاصيل_الأقسام.xlsx");
+    });
+
+    // =======================
+    //  التشارت
+    // =======================
+    const ctx = document.getElementById('budgetChart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: @Html.Raw(JsonSerializer.Serialize(Model.Departments.Select(d => d.Name))),
+            datasets: [
+                {
+                    label: 'الميزانية',
+                    data: @Html.Raw(JsonSerializer.Serialize(Model.Departments.Select(d => d.AnnualBudget))),
+                    backgroundColor: 'rgba(59,130,246,0.6)',
+                    borderColor: '#3b82f6',
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    hoverBackgroundColor: 'rgba(59,130,246,0.9)',
+                    hoverBorderWidth: 3
+                },
+                {
+                    label: 'المصروف',
+                    data: @Html.Raw(JsonSerializer.Serialize(Model.Departments.Select(d => d.TotalExpenses))),
+                    backgroundColor: 'rgba(239, 68, 68, 0.6)',
+                    borderColor: '#ef4444',
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    hoverBackgroundColor: 'rgba(239, 68, 68, 0.9)',
+                    hoverBorderWidth: 3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            animation: {
+                duration: 1200,
+                easing: 'easeOutQuart'
+            },
+            hover: {
+                mode: 'nearest',
+                intersect: true,
+                animationDuration: 400
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(255,255,255,0.05)' },
+                    ticks: { color: '#e5e7eb' }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#e5e7eb' }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: { color: '#e5e7eb' }
+                }
+            }
+        }
+    });
+</script>
+
+<style>
+
+    body {
+        background: #0f0f12;
+        font-family: 'Tajawal', sans-serif;
+        color: #e5e7eb;
+    }
+
+    .dashboard {
+        padding: 40px;
+    }
+
+    /* العنوان */
+    .header h2 {
+        font-size: 32px;
+        color: #9ca3af;
+        margin-bottom: 30px;
+        text-align: center;
+        text-shadow: 0 0 12px #60a5fa;
+        animation: glowPulse 3s infinite ease-in-out;
+    }
+
+    @@keyframes glowPulse {
+        0% {
+            text-shadow: 0 0 6px rgba(96,165,250,0.4); 
+        }
+
+        50% {
+            text-shadow: 0 0 16px rgba(124,58,237,0.6), 0 0 22px rgba(59,130,246,0.5); /* بنفسجي + أزرق متوسط */
+        }
+
+        100% {
+            text-shadow: 0 0 6px rgba(59,130,246,0.6);
+        }
+    }
+
+    /* الكروت */
+    .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+        margin-bottom: 40px;
+    }
+
+    .info-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 18px;
+        border-radius: 16px;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.06);
+        backdrop-filter: blur(12px);
+        transition: 0.3s ease;
+    }
+
+        .info-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 0 18px rgba(167,139,250,0.25);
+            border-color: rgba(167,139,250,0.4);
+        }
+
+    .icon {
+        font-size: 28px;
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .text .title {
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 4px;
+        color: #e5e7eb;
+    }
+
+    .text .desc {
+        font-size: 14px;
+        color: #9ca3af;
+    }
+
+    .violet .icon {
+        background: rgba(167,139,250,0.15);
+        color: #a78bfa;
+    }
+
+    .blue .icon {
+        background: rgba(96,165,250,0.15);
+        color: #60a5fa;
+    }
+
+    .green .icon {
+        background: rgba(52,211,153,0.15);
+        color: #34d399;
+    }
+
+    .gray .icon {
+        background: rgba(156,163,175,0.15);
+        color: #d1d5db;
+    }
+
+    /* التشارت + الجدول */
+    .split-section {
+        display: flex;
+        gap: 30px;
+        margin-top: 30px;
+        flex-wrap: wrap;
+    }
+
+    .box {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 18px;
+        padding: 24px;
+        flex: 1;
+        min-width: 300px;
+        box-sizing: border-box;
+    }
+
+    .chart-box canvas {
+        width: 100% !important;
+        height: 240px !important;
+    }
+
+    /* تنسيق الجدول */
+    .styled-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+    }
+
+        .styled-table thead {
+            background: rgba(255,255,255,0.06);
+        }
+
+        .styled-table th {
+            padding: 14px;
+            color: #d1d5db;
+            text-align: right;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .styled-table td {
+            padding: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: #e5e7eb;
+        }
+
+        .styled-table tbody tr:hover {
+            background: rgba(255,255,255,0.04);
+            transition: 0.2s;
+        }
+
+    .table-box {
+        max-height: 400px;
+        overflow-y: auto;
+        border-radius: 14px;
+    }
+
+    /* زر عرض المصروفات */
+    .action-btn {
+        display: inline-block;
+        padding: 4px 10px;
+        font-size: 10px;
+        font-weight: 600;
+        color: white;
+        background: linear-gradient(to right, #3b82f6, #60a5fa);
+        border-radius: 10px;
+        text-decoration: none;
+        transition: 0.3s ease;
+        box-shadow: 0 0 8px rgba(59,130,246,0.3);
+    }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 12px rgba(59,130,246,0.5);
+        }
+
+        /* زر Excel + زر رجوع */
+        .button-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .excel-btn {
+            padding: 10px 20px;
+            background: linear-gradient(to right, #059669, #10b981);
+            color: white;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s ease;
+            box-shadow: 0 0 10px rgba(16,185,129,0.3);
+        }
+
+            .excel-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 0 14px rgba(16,185,129,0.5);
+            }
+
+        .back-btn {
+            padding: 10px 22px;
+            background: #4b5563;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.3s ease;
+            box-shadow: 0 0 10px rgba(255,255,255,0.05);
+        }
+
+            .back-btn:hover {
+                background: #3b82f6;
+                transform: translateY(-2px);
+                box-shadow: 0 0 14px rgba(59,130,246,0.5);
+            }
+
+    </style>

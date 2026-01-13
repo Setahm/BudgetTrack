@@ -1,0 +1,445 @@
+﻿@{
+    ViewData["Title"] = "الرئيسية";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<style>
+
+    /* ANIMATION */
+    @@keyframes fadeUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .reveal {
+        opacity: 0;
+        transform: translateY(26px);
+        transition: opacity .7s ease, transform .7s ease;
+    }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    /* GLOBAL */
+    section {
+        padding: 80px 60px;
+    }
+
+    h2.section-title {
+        text-align: center;
+        font-size: 32px;
+        color: #e5f4ff;
+        margin-bottom: 12px;
+        font-weight: 700;
+    }
+
+    p.section-subtitle {
+        text-align: center;
+        font-size: 15px;
+        color: #94a3b8;
+        margin-bottom: 40px;
+    }
+
+    /* HERO */
+    .hero {
+        text-align: center;
+        padding: 120px 40px 100px;
+        background: radial-gradient(circle 90% 70% at top, rgba(56,189,248,0.18), transparent 100%), #0f172a;
+    }
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        border-radius: 999px;
+        background: rgba(15,23,42,0.7);
+        border: 1px solid rgba(148,163,184,0.4);
+        color: #cbd5f5;
+        font-size: 13px;
+        margin-bottom: 18px;
+    }
+
+        .badge i {
+            color: #22c55e;
+        }
+
+    .hero-title {
+        font-size: 46px;
+        font-weight: 700;
+        color: #e5f4ff;
+        margin-bottom: 16px;
+        line-height: 1.2;
+    }
+
+        .hero-title span {
+            color: #38bdf8;
+        }
+
+    .hero-text {
+        max-width: 650px;
+        margin: 0 auto 28px;
+        font-size: 17px;
+        line-height: 1.8;
+        color: #cbd5f5;
+    }
+
+    .hero-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        margin-top: 10px;
+    }
+
+    .btn-primary {
+        padding: 12px 28px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+        color: #0f172a;
+        font-weight: 600;
+        text-decoration: none;
+        box-shadow: 0 12px 30px rgba(56,189,248,0.45);
+        transition: .25s;
+    }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 36px rgba(56,189,248,0.6);
+        }
+
+    .btn-ghost {
+        padding: 12px 26px;
+        border-radius: 999px;
+        border: 1px solid rgba(148,163,184,0.6);
+        background: rgba(15,23,42,0.85);
+        color: #e5f4ff;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: .25s;
+    }
+
+        .btn-ghost i {
+            color: #38bdf8;
+        }
+
+        .btn-ghost:hover {
+            border-color: #38bdf8;
+            background: rgba(15,23,42,0.95);
+        }
+
+    /* FEATURES */
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 26px;
+    }
+
+    .feature-card {
+        background: rgba(15,23,42,0.95);
+        border-radius: 18px;
+        padding: 24px 22px;
+        border: 1px solid rgba(30,64,175,0.7);
+        box-shadow: 0 16px 40px rgba(15,23,42,0.9);
+        transition: .25s;
+    }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: #38bdf8;
+            box-shadow: 0 20px 50px rgba(15,23,42,1);
+        }
+
+    .feature-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(circle at top left, rgba(56,189,248,0.35), transparent 60%), rgba(15,23,42,1);
+        color: #7dd3fc;
+        margin-bottom: 14px;
+        font-size: 18px;
+    }
+
+    .feature-card h3 {
+        font-size: 17px;
+        color: #e5f4ff;
+        margin-bottom: 8px;
+    }
+
+    .feature-card p {
+        font-size: 14px;
+        color: #94a3b8;
+        line-height: 1.7;
+    }
+
+    /* WHY */
+    .why-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.3fr);
+        gap: 40px;
+        align-items: center;
+    }
+
+    .why-item {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        font-size: 15px;
+        color: #cbd5f5;
+        margin-bottom: 12px;
+    }
+
+        .why-item i {
+            margin-top: 3px;
+            color: #22c55e;
+        }
+
+    .analytics-card {
+        border-radius: 22px;
+        padding: 20px;
+        background: rgba(15,23,42,0.98);
+        border: 1px solid rgba(148,163,184,0.6);
+        box-shadow: 0 20px 60px rgba(15,23,42,1);
+    }
+
+    .analytics-preview {
+        height: 220px;
+        border-radius: 16px;
+        background: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80') center/cover;
+        margin-bottom: 14px;
+    }
+
+    .analytics-caption {
+        font-size: 13px;
+        color: #94a3b8;
+    }
+
+    /* STATS */
+    .stats-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 22px;
+        justify-content: center;
+    }
+
+    .stat-card {
+        min-width: 180px;
+        padding: 20px 22px;
+        border-radius: 18px;
+        background: rgba(15,23,42,0.96);
+        border: 1px solid rgba(30,64,175,0.8);
+        text-align: center;
+        box-shadow: 0 16px 40px rgba(15,23,42,1);
+    }
+
+        .stat-card h3 {
+            font-size: 26px;
+            color: #7dd3fc;
+            margin-bottom: 6px;
+        }
+
+        .stat-card p {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+    /* CTA */
+    .cta {
+        padding: 80px 60px;
+        text-align: center;
+        background: radial-gradient(circle at top, rgba(56,189,248,0.18), transparent 55%), #0f172a;
+    }
+
+        .cta h2 {
+            font-size: 28px;
+            color: #e5f4ff;
+            margin-bottom: 12px;
+        }
+
+        .cta p {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 26px;
+        }
+
+</style>
+
+<!-- HERO -->
+<section class="hero reveal">
+
+    <h1 class="hero-title">
+        إدارة مالية ذكية <span>ببساطة</span>
+    </h1>
+
+    <p class="hero-text">
+        BudgetTrack هو نظام لإدارة مصروفات الشركات والتحكم في الميزانية مع تحليلات دقيقة وتوقعات تعتمد على الذكاء الاصطناعي.
+    </p>
+
+    <div class="hero-buttons">
+        @if (Context.Session.GetString("UserEmail") == null)
+        {
+            <a asp-controller="Auth" asp-action="Register" class="btn-primary">ابدأ الآن</a>
+        }
+        else
+        {
+            <a href="/CompanyDashboard/CompanyHome/1" class="btn-primary">ابدأ الآن</a>
+        }
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="section reveal">
+    <h2 class="section-title">مميزات BudgetTrack</h2>
+    <p class="section-subtitle">أدوات قوية تساعدك على إدارة مصروفات شركتك بكفاءة.</p>
+
+    <div class="features-grid">
+
+        <div class="feature-card reveal">
+            <div class="feature-icon"><i class="fa-solid fa-receipt"></i></div>
+            <h3>Expense Tracking</h3>
+            <p>تتبع مصروفات الشركة وتحليلها بدقة عبر لوحة تحكم واضحة وسهلة الاستخدام.</p>
+        </div>
+
+        <div class="feature-card reveal">
+            <div class="feature-icon"><i class="fa-solid fa-chart-pie"></i></div>
+            <h3>إدارة الميزانية</h3>
+            <p>تحديد وإدارة الميزانيات لكل قسم ومراقبة الأداء المالي.</p>
+        </div>
+
+        <div class="feature-card reveal">
+            <div class="feature-icon"><i class="fa-solid fa-brain"></i></div>
+            <h3>التنبؤ بالذكاء الاصطناعي</h3>
+            <p>تحليل البيانات والتنبؤ بالمصروفات المستقبلية باستخدام الذكاء الاصطناعي</p>
+        </div>
+
+        <div class="feature-card reveal">
+            <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <h3>الأمان أولًا</h3>
+            <p>نظام صلاحيات آمن مع تشفير وحماية عالية المستوى.</p>
+        </div>
+
+        <div class="feature-card reveal">
+            <div class="feature-icon"><i class="fa-solid fa-users"></i></div>
+            <h3>تعاون الفريق</h3>
+            <p>واجهة بسيطة تسهّل التواصل بين أعضاء الفريق.</p>
+        </div>
+
+        <div class="feature-card reveal">
+            <div class="feature-icon"><i class="fa-solid fa-chart-line"></i></div>
+            <h3>تحليلات فورية</h3>
+            <p>لوحات معلومات محدثة لحظيًا مع تقارير وبيانات مالية دقيقة.</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- WHY -->
+<section id="why" class="section reveal">
+    <h2 class="section-title">لماذا BudgetTrack؟</h2>
+    <p class="section-subtitle">حلول عملية تساعدك على اتخاذ قرارات مالية أفضل.</p>
+
+    <div class="why-grid">
+
+        <div class="why-points">
+
+            <div class="why-item">
+                <i class="fa-solid fa-circle-check"></i>
+                <span>منصة موحدة لإدارة المصروفات والميزانيات في مكان واحد.</span>
+            </div>
+
+            <div class="why-item">
+                <i class="fa-solid fa-circle-check"></i>
+                <span>تكامل سهل مع أنظمة الشركة الحالية.</span>
+            </div>
+
+            <div class="why-item">
+                <i class="fa-solid fa-circle-check"></i>
+                <span>تحليلات وتوقعات تساعدك على اتخاذ قرارات دقيقة.</span>
+            </div>
+
+            <div class="why-item">
+                <i class="fa-solid fa-circle-check"></i>
+                <span>نظام جاهز للتوسع مع صلاحيات وإدارة متقدمة.</span>
+            </div>
+
+        </div>
+
+        <div>
+            <div class="analytics-card reveal">
+                <div class="analytics-preview"></div>
+                <div class="analytics-caption">Essential Analytics</div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- STATS -->
+<section class="section section-center reveal">
+    <h2 class="section-title">أرقام تهمك</h2>
+    <p class="section-subtitle">نتائج حقيقية تعكس قوة النظام.</p>
+
+    <div class="stats-row">
+
+        <div class="stat-card reveal">
+            <h3>50+</h3>
+            <p>شركة تستخدم النظام</p>
+        </div>
+
+        <div class="stat-card reveal">
+            <h3>5M+</h3>
+            <p>مصروفات مُدارة</p>
+        </div>
+
+        <div class="stat-card reveal">
+            <h3>99%</h3>
+            <p>دقة التنبؤ</p>
+        </div>
+
+        <div class="stat-card reveal">
+            <h3>24/7</h3>
+            <p>جاهزية النظام</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta reveal">
+    <h2>جاهز لتطوير إدارة شركتك؟</h2>
+    <p>ابدأ الآن واستفد من أدوات BudgetTrack المتقدمة.</p>
+
+    <div class="hero-buttons" style="justify-content:center;">
+        <a asp-controller="Auth" asp-action="Register" class="btn-primary">إنشاء حساب</a>
+    </div>
+</section>
+
+<!-- SCROLL REVEAL SCRIPT -->
+<script>
+    const reveals = document.querySelectorAll('.reveal');
+
+    const onScroll = () => {
+        const trigger = window.innerHeight * 0.85;
+
+        reveals.forEach(el => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < trigger) {
+                el.classList.add('visible');
+            }
+        });
+    };
+
+    window.addEventListener('scroll', onScroll);
+    window.addEventListener('load', onScroll);
+</script>

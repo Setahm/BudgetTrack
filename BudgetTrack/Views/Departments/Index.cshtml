@@ -1,0 +1,259 @@
+﻿@model IEnumerable<BudgetTrack.Models.Department>
+
+<div class="page-container fade-in">
+
+    <!-- العنوان + زر إضافة -->
+    <div class="header-row">
+        <h2 class="page-title">الأقسام</h2>
+        <a href="@Url.Action("Create")" class="add-btn">+ إضافة قسم جديد</a>
+    </div>
+
+    <!-- كرت عدد الأقسام -->
+    <div class="summary-card fade-in">
+        <p class="summary-label">عدد الأقسام</p>
+        <p class="summary-value">@Model.Count()</p>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-box fade-in">
+            <p>لا توجد أقسام حتى الآن.</p>
+            <a href="@Url.Action("Create")">إضافة قسم جديد</a>
+        </div>
+    }
+    else
+    {
+        <!-- جدول داخل كرت واسع -->
+        <div class="table-wrapper fade-in">
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th>القسم</th>
+                        <th>السنة</th>
+                        <th>الميزانية</th>
+                        <th>إجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var dept in Model)
+                    {
+                        <tr>
+                            <td>@dept.Name</td>
+                            <td>@dept.Year</td>
+                            <td>@dept.AnnualBudget.ToString("N2") ﷼</td>
+                            <td class="actions">
+                                <a href="@Url.Action("Edit", new { id = dept.Id })" class="edit-btn">تعديل</a>
+                                <a href="@Url.Action("Delete", new { id = dept.Id })" class="delete-btn">حذف</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <!-- زر الرجوع -->
+    <div class="back-row fade-in">
+        <a href="@Url.Action("Index", "CompanyDashboard")" class="back-btn">رجوع للوحة التحكم</a>
+    </div>
+
+</div>
+
+<style>
+
+    body {
+        background: #0f0f12;
+        font-family: 'Tajawal', sans-serif;
+        color: #e5e7eb;
+    }
+
+    .page-container {
+        max-width: 100%;
+        padding: 40px 60px;
+    }
+
+    .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .page-title {
+        font-size: 32px;
+        color: #a5b4fc;
+        text-shadow: 0 0 14px rgba(124,58,237,0.5);
+    }
+
+    .add-btn {
+        background: #3b82f6;
+        padding: 12px 22px;
+        border-radius: 14px;
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.3s ease;
+        box-shadow: 0 0 12px rgba(59,130,246,0.5);
+    }
+
+        .add-btn:hover {
+            background: #2563eb;
+            transform: translateY(-3px);
+            box-shadow: 0 0 18px rgba(59,130,246,0.7);
+        }
+
+    .summary-card {
+        margin-bottom: 25px;
+        background: linear-gradient(to bottom right, #1e293b, #0f172a);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 18px;
+        padding: 25px;
+        text-align: center;
+        box-shadow: 0 0 12px rgba(255,255,255,0.05);
+    }
+
+    .summary-label {
+        font-size: 17px;
+        color: #a5b4fc;
+        margin-bottom: 6px;
+        font-weight: 600;
+    }
+
+    .summary-value {
+        font-size: 30px;
+        font-weight: bold;
+        color: #38bdf8;
+        text-shadow: 0 0 12px rgba(59,130,246,0.5);
+    }
+
+    .empty-box {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.06);
+        padding: 25px;
+        border-radius: 16px;
+        text-align: center;
+    }
+
+        .empty-box a {
+            color: #60a5fa;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+    .table-wrapper {
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 0 20px rgba(59,130,246,0.08);
+    }
+
+    .modern-table {
+        width: 100%;
+        font-size: 18px;
+        border-collapse: collapse;
+    }
+
+        .modern-table thead {
+            background: rgba(255,255,255,0.06);
+        }
+
+        .modern-table th {
+            padding: 20px;
+            font-size: 17px;
+            color: #a5b4fc;
+            text-align: right;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .modern-table td {
+            padding: 20px;
+            font-size: 16px;
+            color: #e5e7eb;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .modern-table tr:hover {
+            background: rgba(59,130,246,0.08);
+            transition: 0.25s ease;
+        }
+
+    .actions {
+        display: flex;
+        gap: 12px;
+        justify-content: flex-end;
+    }
+
+    .edit-btn {
+        background: #facc15;
+        padding: 8px 18px;
+        border-radius: 12px;
+        color: #000;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.3s ease;
+        box-shadow: 0 0 10px rgba(250,204,21,0.4);
+    }
+
+        .edit-btn:hover {
+            background: #eab308;
+            transform: translateY(-2px);
+            box-shadow: 0 0 14px rgba(250,204,21,0.6);
+        }
+
+    .delete-btn {
+        background: #ef4444;
+        padding: 8px 18px;
+        border-radius: 12px;
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.3s ease;
+        box-shadow: 0 0 10px rgba(239,68,68,0.4);
+    }
+
+        .delete-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 0 14px rgba(239,68,68,0.6);
+        }
+
+    .back-row {
+        margin-top: 35px;
+    }
+
+    .back-btn {
+        padding: 12px 24px;
+        background: #4b5563;
+        border-radius: 14px;
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.3s ease;
+        box-shadow: 0 0 10px rgba(255,255,255,0.05);
+    }
+
+        .back-btn:hover {
+            background: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 0 16px rgba(59,130,246,0.6);
+        }
+
+    .fade-in {
+        animation: fadeIn 0.8s ease-in-out both;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+</style>

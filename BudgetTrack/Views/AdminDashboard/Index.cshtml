@@ -1,0 +1,410 @@
+﻿@model List<BudgetTrack.Models.Company>
+
+@{
+    ViewData["Title"] = "الشركات";
+}
+
+<div class="admin-wrapper">
+    <div class="admin-card" id="card">
+
+        <h2 class="admin-title">الشركات</h2>
+        <p class="admin-subtitle">إدارة الشركات المسجّلة داخل النظام</p>
+
+        @if (ViewBag.PendingUsersCount > 0)
+        {
+            <div class="pending-alert">
+                <span>
+                    لديك <strong>@ViewBag.PendingUsersCount</strong> مستخدمين ينتظرون الموافقة
+                </span>
+
+                <a href="/AdminDashboard/PendingUsers" class="alert-btn">
+                    عرض المستخدمين
+                </a>
+            </div>
+        }
+
+        <div class="top-actions">
+            <a asp-action="Create" class="admin-btn primary">إضافة شركة جديدة</a>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>اسم الشركة</th>
+                        <th>الحالة</th>
+                        <th>تاريخ الإنشاء</th>
+                        <th>عدد الأقسام</th>
+                        <th>عدد المستخدمين</th>
+                        <th>إجراءات</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var company in Model)
+                        {
+                            <tr>
+                                <td>@company.Name</td>
+                                <td class="@(company.IsActive ? "active-status" : "inactive-status")">
+                                    @(company.IsActive ? "مفعّلة" : "غير مفعّلة")
+                                </td>
+                                <td>@company.CreatedAt.ToString("yyyy-MM-dd")</td>
+                                <td>@(company.Departments?.Count() ?? 0)</td>
+                                <td>@(company.Users?.Count() ?? 0)</td>
+
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@company.Id" class="table-btn edit">تعديل</a>
+
+                                    <!-- زر الحذف مع عدد المستخدمين -->
+                                    <button class="table-btn delete"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal"
+                                            data-id="@company.Id"
+                                            data-name="@company.Name"
+                                            data-users="@company.Users?.Count() ?? 0">
+                                        حذف
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="empty-row">لا توجد شركات حالياً</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<!-- ========================= -->
+<!--      DELETE MODAL         -->
+<!-- ========================= -->
+
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content delete-modal">
+
+            <div class="modal-header">
+                <h5 class="modal-title">تأكيد الحذف</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <p>هل أنت متأكد أنك تريد حذف الشركة:</p>
+                <h4 id="companyName" class="company-name"></h4>
+
+                <!-- تنبيه إذا الشركة تحتوي على مستخدمين -->
+                <div id="deleteWarning" class="delete-warning" style="display:none;">
+                    ⚠ لا يمكن حذف الشركة لأنها تحتوي على مستخدمين مرتبطين.
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <form id="deleteForm" method="post">
+                    <button type="submit" class="admin-btn danger">نعم، حذف</button>
+                </form>
+
+                <button class="admin-btn secondary" data-bs-dismiss="modal">إلغاء</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("card").classList.add("loaded");
+        });
+
+        const deleteModal = document.getElementById('deleteModal');
+
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+
+            const id = button.getAttribute('data-id');
+            const name = button.getAttribute('data-name');
+            const users = parseInt(button.getAttribute('data-users'));
+
+            document.getElementById('companyName').textContent = name;
+
+            const form = document.getElementById('deleteForm');
+            const warning = document.getElementById('deleteWarning');
+            const deleteBtn = form.querySelector('button[type="submit"]');
+
+            if (users > 0) {
+                warning.style.display = "block";
+                deleteBtn.disabled = true;
+                form.action = "#";
+            } else {
+                warning.style.display = "none";
+                deleteBtn.disabled = false;
+                form.action = `/AdminDashboard/DeleteConfirmed/${id}`;
+            }
+        });
+    </script>
+}
+
+<style>
+
+    body {
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        background-size: 200% 200%;
+        font-family: 'Tajawal', sans-serif;
+        color: white;
+    }
+
+    .admin-wrapper {
+        min-height: calc(100vh - 95px - 180px);
+        padding: 25px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .admin-card {
+        width: 100%;
+        max-width: 1100px;
+        background: rgba(255,255,255,0.06);
+        padding: 32px;
+        border-radius: 20px;
+        backdrop-filter: blur(14px);
+        border: 1px solid rgba(255,255,255,0.18);
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+        transition: 0.6s ease;
+    }
+
+        .admin-card.loaded {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+    .admin-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #38bdf8;
+        text-align: center;
+        margin-bottom: 6px;
+    }
+
+    .admin-subtitle {
+        text-align: center;
+        color: #cbd5e1;
+        margin-bottom: 25px;
+    }
+
+    .pending-alert {
+        background: rgba(255, 193, 7, 0.15);
+        border: 1px solid rgba(255, 193, 7, 0.4);
+        padding: 14px 18px;
+        border-radius: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+        color: #ffe69c;
+    }
+
+    .alert-btn {
+        background: #38bdf8;
+        padding: 8px 14px;
+        border-radius: 10px;
+        color: #0f172a;
+        text-decoration: none;
+        font-size: 14px;
+        transition: 0.3s;
+    }
+
+        .alert-btn:hover {
+            background: #7dd3fc;
+        }
+
+    .top-actions {
+        margin-bottom: 18px;
+        text-align: left;
+    }
+
+    .admin-btn.primary {
+        background: linear-gradient(135deg, #38bdf8, #7dd3fc);
+        padding: 12px 20px;
+        border-radius: 14px;
+        color: #0f172a;
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+        .admin-btn.primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(56,189,248,0.35);
+        }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        color: white;
+    }
+
+        .admin-table thead {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .admin-table th {
+            padding: 14px;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .admin-table td {
+            padding: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+    .active-status {
+        color: #4ade80;
+        font-weight: 600;
+    }
+
+    .inactive-status {
+        color: #f87171;
+        font-weight: 600;
+    }
+
+    .table-btn {
+        padding: 6px 12px;
+        border-radius: 10px;
+        font-size: 14px;
+        text-decoration: none;
+        margin-left: 6px;
+        transition: 0.3s;
+        cursor: pointer;
+        border: none;
+    }
+
+        .table-btn.edit {
+            background: #facc15;
+            color: #0f172a;
+        }
+
+            .table-btn.edit:hover {
+                background: #fde047;
+            }
+
+        .table-btn.delete {
+            background: #ef4444;
+            color: white;
+        }
+
+            .table-btn.delete:hover {
+                background: #dc2626;
+            }
+
+    .empty-row {
+        text-align: center;
+        padding: 20px;
+        color: #94a3b8;
+    }
+
+    /* ====================== */
+    /*       DELETE MODAL     */
+    /* ====================== */
+
+    .delete-modal {
+        background: rgba(255,255,255,0.07);
+        backdrop-filter: blur(16px);
+        border-radius: 20px;
+        border: 1px solid rgba(255,255,255,0.15);
+        padding: 20px;
+        color: white;
+        animation: fadeInModal 0.4s ease;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+    }
+
+    @@keyframes fadeInModal {
+        0% {
+            transform: scale(0.9);
+            opacity: 0;
+        }
+
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
+    .modal-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #f87171;
+    }
+
+    .company-name {
+        font-size: 20px;
+        font-weight: 600;
+        color: #38bdf8;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .delete-warning {
+        background: rgba(255, 193, 7, 0.15);
+        border: 1px solid rgba(255, 193, 7, 0.4);
+        padding: 12px;
+        border-radius: 12px;
+        color: #ffe69c;
+        font-size: 15px;
+        margin-top: 12px;
+        text-align: center;
+    }
+
+    .btn-close {
+        filter: invert(1);
+        opacity: 0.8;
+        transition: 0.3s;
+    }
+
+        .btn-close:hover {
+            opacity: 1;
+        }
+
+    .admin-btn.danger {
+        background: linear-gradient(135deg, #ef4444, #f87171);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 12px;
+        font-weight: 600;
+        border: none;
+        transition: 0.3s;
+    }
+
+        .admin-btn.danger:hover {
+            background: linear-gradient(135deg, #dc2626, #f43f5e);
+        }
+
+    .admin-btn.secondary {
+        background: rgba(255,255,255,0.15);
+        color: #e2e8f0;
+        padding: 10px 20px;
+        border-radius: 12px;
+        font-weight: 600;
+        border: none;
+        transition: 0.3s;
+    }
+
+        .admin-btn.secondary:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+</style>

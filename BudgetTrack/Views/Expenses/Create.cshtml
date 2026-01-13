@@ -1,0 +1,152 @@
+﻿@model BudgetTrack.Models.Expense
+
+<div class="page-container fade-in">
+
+    <div class="header-row">
+        <h2 class="page-title">إضافة مصروف جديد</h2>
+    </div>
+
+    <div class="table-wrapper fade-in">
+
+        <form method="post">
+
+            <input type="hidden" name="DepartmentId" value="@ViewBag.DepartmentId" />
+
+            <div class="form-group">
+                <label>الوصف</label>
+                <input type="text" class="input-field" name="Description" required />
+            </div>
+
+            <div class="form-group">
+                <label>المبلغ</label>
+                <input type="number" class="input-field" name="Amount" required />
+            </div>
+
+            <div class="form-group">
+                <label>التاريخ</label>
+                <input type="date" class="input-field" name="ExpenseDate" required />
+            </div>
+
+            <div class="actions" style="margin-top:25px;">
+                <button type="submit" class="edit-btn">حفظ</button>
+                <a href="@Url.Action("Index", new { departmentId = ViewBag.DepartmentId })"
+                   class="back-btn">رجوع</a>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+<style>
+
+    /* نفس ستايل الإندكس */
+
+    .page-container {
+        max-width: 100%;
+        padding: 40px 60px;
+    }
+
+    .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .page-title {
+        font-size: 32px;
+        color: #a5b4fc;
+        text-shadow: 0 0 14px rgba(124,58,237,0.5);
+    }
+
+    .table-wrapper {
+        background: rgba(255,255,255,0.02);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 0 20px rgba(59,130,246,0.08);
+    }
+
+    .form-group {
+        margin-bottom: 22px;
+    }
+
+        .form-group label {
+            color: #a5b4fc;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+    .input-field {
+        background: #0f172a;
+        border: 1px solid rgba(255,255,255,0.08);
+        color: white;
+        border-radius: 12px;
+        padding: 12px 14px;
+        width: 100%;
+        transition: 0.25s ease;
+        font-size: 16px;
+    }
+
+        .input-field:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 10px rgba(59,130,246,0.4);
+        }
+
+    .edit-btn {
+        background: #3b82f6;
+        padding: 12px 24px;
+        border-radius: 14px;
+        color: white;
+        font-weight: 700;
+        text-decoration: none;
+        border: none;
+        transition: 0.3s ease;
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(59,130,246,0.4);
+    }
+
+        .edit-btn:hover {
+            background: #2563eb;
+            transform: translateY(-3px);
+            box-shadow: 0 0 14px rgba(59,130,246,0.6);
+        }
+
+    .back-btn {
+        padding: 12px 24px;
+        background: #4b5563;
+        border-radius: 14px;
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.3s ease;
+        box-shadow: 0 0 10px rgba(255,255,255,0.05);
+        margin-right: 10px;
+    }
+
+        .back-btn:hover {
+            background: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 0 16px rgba(59,130,246,0.6);
+        }
+
+    .fade-in {
+        animation: fadeIn 0.8s ease-in-out both;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+</style>

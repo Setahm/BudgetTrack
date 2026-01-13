@@ -1,0 +1,165 @@
+﻿@{
+    ViewData["Title"] = "سياسة الخصوصية";
+}
+
+<div class="privacy-container fade-in">
+
+    <!-- صورة 3D فوق بالنص -->
+    <div class="privacy-image-wrapper">
+        <img src="https://img.icons8.com/glassmorphism/96/privacy-policy.png"
+             class="floating-image" alt="Privacy 3D" />
+    </div>
+
+    <div class="privacy-header">
+        <i class="fa-solid fa-shield-halved"></i>
+        <h1>سياسة الخصوصية</h1>
+        <p>نحمي بياناتك… ونوضح لك كل شيء بكل شفافية.</p>
+    </div>
+
+    <div class="privacy-section">
+        <h2><i class="fa-solid fa-lock"></i> كيف نتعامل مع بياناتك؟</h2>
+        <p>
+            نحن في <span class="highlight">BudgetTrack</span> نلتزم بحماية خصوصيتك بشكل كامل.
+            يتم جمع البيانات فقط لتحسين تجربتك داخل النظام، وتقديم خدمات دقيقة وسلسة.
+        </p>
+    </div>
+
+    <div class="privacy-section">
+        <h2><i class="fa-solid fa-database"></i> هل نشارك بياناتك؟</h2>
+        <p>
+            لا يتم مشاركة بياناتك مع أي جهة خارجية إطلاقًا،
+            إلا إذا كان هناك التزام قانوني يتطلب ذلك.
+        </p>
+    </div>
+
+    <div class="privacy-section">
+        <h2><i class="fa-solid fa-user-shield"></i> كيف نضمن الأمان؟</h2>
+        <p>
+            نستخدم أحدث تقنيات التشفير والحماية لضمان سرية معلوماتك،
+            ونعمل باستمرار على تحسين مستوى الأمان داخل المنصة.
+        </p>
+    </div>
+
+    <div class="privacy-section">
+        <h2><i class="fa-solid fa-circle-info"></i> موافقتك</h2>
+        <p>
+            باستخدامك لمنصتنا، فأنت توافق على سياسة الخصوصية هذه.
+            وإذا كان لديك أي استفسار، يسعدنا تواصلك معنا في أي وقت.
+        </p>
+    </div>
+
+</div>
+
+<style>
+
+    .fade-in {
+        animation: fadeIn 0.8s ease both;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .privacy-container {
+        max-width: 850px;
+        margin: 60px auto;
+        padding: 40px 30px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 22px;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    }
+
+    /* الصورة 3D */
+    .privacy-image-wrapper {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .floating-image {
+        width: 150px;
+        animation: float 4s ease-in-out infinite;
+        filter: drop-shadow(0 0 12px rgba(56,189,248,0.4));
+    }
+
+    @@keyframes float {
+        0% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-12px);
+        }
+
+        100% {
+            transform: translateY(0);
+        }
+    }
+
+    .privacy-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+        .privacy-header i {
+            font-size: 45px;
+            color: #38bdf8;
+            margin-bottom: 10px;
+        }
+
+        .privacy-header h1 {
+            font-size: 32px;
+            color: #38bdf8;
+            margin-bottom: 10px;
+        }
+
+        .privacy-header p {
+            color: #cbd5e1;
+            font-size: 17px;
+            line-height: 1.8;
+        }
+
+    .privacy-section {
+        margin-bottom: 35px;
+        padding: 20px 25px;
+        background: rgba(255,255,255,0.03);
+        border-radius: 16px;
+        border: 1px solid rgba(255,255,255,0.06);
+        transition: 0.3s ease;
+    }
+
+        .privacy-section:hover {
+            background: rgba(255,255,255,0.06);
+            transform: translateY(-3px);
+        }
+
+        .privacy-section h2 {
+            font-size: 22px;
+            color: #a5b4fc;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .privacy-section p {
+            color: #e2e8f0;
+            font-size: 17px;
+            line-height: 1.9;
+        }
+
+    .highlight {
+        color: #38bdf8;
+        font-weight: 600;
+    }
+
+</style>

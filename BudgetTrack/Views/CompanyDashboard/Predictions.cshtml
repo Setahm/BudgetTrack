@@ -1,0 +1,474 @@
+﻿@model List<BudgetTrack.ViewModels.DepartmentPredictionViewModel>
+
+<div class="prediction-page">
+
+    <div class="header fade-in">
+        <h2>التنبؤ بميزانية السنة القادمة</h2>
+    </div>
+
+    <div class="summary-card fade-in">
+        <p class="summary-label">إجمالي التنبؤ للشركة</p>
+        <p class="summary-value">@ViewBag.TotalCompanyPrediction.ToString("N2") ﷼</p>
+    </div>
+
+    <div class="prediction-grid fade-in">
+
+        <!-- تشارت الأعمدة (النسخة المعدّلة اللي تبينها) -->
+        <div class="card">
+            <p class="card-title">توقعات الأقسام</p>
+            <div class="chart-container">
+                <canvas id="deptChart"></canvas>
+            </div>
+        </div>
+
+        <!-- الدوائر (إضافة فقط بدون لمس أي شيء ثاني) -->
+        <div class="card">
+            <p class="card-title">توزيع الميزانية المتوقعة</p>
+
+            <!-- LEGEND فوق -->
+            <div class="legend-row">
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    var item = Model[i];
+                    var colors = new[] { "#3b82f6", "#10b981", "#06b6d4", "#facc15", "#ef4444", "#9ca3af" };
+                    var color = colors[i % colors.Length];
+
+                    <div class="legend-box">
+                        <span class="legend-color" style="background:@color"></span>
+                        <span class="legend-label">@item.DepartmentName</span>
+                    </div>
+                }
+            </div>
+
+            <div class="circle-layout">
+
+                <!-- الدائرة الكبيرة -->
+                <div class="main-circle-wrapper">
+                    <canvas id="totalCircle"></canvas>
+                    <div class="main-circle-label">
+                        <p class="main-label">إجمالي</p>
+                        <p class="main-value">@ViewBag.TotalCompanyPrediction.ToString("N2") ﷼</p>
+                        <p class="main-percent">100%</p>
+                    </div>
+                </div>
+
+                <!-- الدوائر الصغيرة -->
+                <div class="mini-circles">
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        <div class="mini-circle-wrapper">
+                            <canvas id="deptCircle_@i"></canvas>
+                            <div class="mini-circle-label">
+                                <p class="mini-percent" id="percent_@i"></p>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+            </div>
+        </div>
+
+        <!-- كروت الأقسام (نسخة B الأصلية بدون أي تغيير) -->
+        <div class="card full-row">
+            <p class="card-title">تفاصيل التوقعات لكل قسم</p>
+
+            <div class="grid-cards">
+                @foreach (var item in Model)
+                {
+                    <a class="dept-card"
+                       href="@Url.Action("Index", "Expenses", new { departmentId = item.DepartmentId })">
+
+                        <div class="card-icon">🏢</div>
+                        <p class="dept-name">@item.DepartmentName</p>
+                        <p class="dept-budget">@item.PredictedBudget.ToString("N2") ﷼</p>
+
+                    </a>
+                }
+            </div>
+        </div>
+
+    </div>
+
+    <div class="button-row fade-in">
+        <a href="@Url.Action("Index", "CompanyDashboard")" class="back-btn">رجوع</a>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+    const labels = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Select(m => m.DepartmentName)));
+    const data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Select(m => m.PredictedBudget)));
+    const total = @ViewBag.TotalCompanyPrediction ?? 0;
+
+    // ============================
+    //  تشارت الأعمدة (النسخة المعدّلة)
+    // ============================
+    new Chart(document.getElementById('deptChart'), {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'الميزانية المتوقعة',
+                data: data,
+                backgroundColor: function(context) {
+                    const colors = [
+                        'rgba(59,130,246,0.7)',
+                        'rgba(16,185,129,0.7)',
+                        'rgba(6,182,212,0.7)',
+                        'rgba(250,204,21,0.7)',
+                        'rgba(239,68,68,0.7)',
+                        'rgba(156,163,175,0.7)'
+                    ];
+                    return colors[context.dataIndex % colors.length];
+                },
+                borderColor: '#ffffff22',
+                borderWidth: 2,
+                borderRadius: 10,
+                hoverBackgroundColor: 'rgba(59,130,246,1)',
+                hoverBorderColor: '#ffffff55'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: {
+                duration: 1200,
+                easing: 'easeOutQuart'
+            },
+            plugins: {
+                tooltip: {
+                    enabled: true,
+                    backgroundColor: '#1e293b',
+                    titleColor: '#fff',
+                    bodyColor: '#a5b4fc',
+                    borderColor: '#3b82f6',
+                    borderWidth: 1,
+                    padding: 10,
+                    displayColors: false
+                },
+                legend: {
+                    labels: {
+                        color: '#a5b4fc',
+                        font: { size: 14 }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        color: '#a5b4fc',
+                        font: { size: 14 }
+                    },
+                    grid: { display: false }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: '#a5b4fc',
+                        font: { size: 14 }
+                    },
+                    grid: {
+                        color: 'rgba(255,255,255,0.05)'
+                    }
+                }
+            }
+        }
+    });
+
+    // ============================
+    //  الدائرة الكبيرة
+    // ============================
+    new Chart(document.getElementById('totalCircle'), {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: [100, 0],
+                backgroundColor: ['rgba(59,130,246,0.9)', 'rgba(15,23,42,0.6)'],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            cutout: '70%',
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    // ============================
+    //  الدوائر الصغيرة
+    // ============================
+    const colors = [
+        '#3b82f6', '#10b981', '#06b6d4',
+        '#facc15', '#ef4444', '#9ca3af'
+    ];
+
+    data.forEach((value, index) => {
+        const percent = total > 0 ? (value / total * 100) : 0;
+
+        document.getElementById(`percent_${index}`).innerText = percent.toFixed(1) + "%";
+
+        new Chart(document.getElementById(`deptCircle_${index}`), {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [percent, 100 - percent],
+                    backgroundColor: [
+                        colors[index % colors.length],
+                        'rgba(15,23,42,0.7)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                cutout: '70%',
+                plugins: { legend: { display: false } }
+            }
+        });
+    });
+
+</script>
+
+<style>
+
+    /* كل شيء هنا هو نسخة B الأصلية — بدون أي تغيير */
+    body {
+        background: #0f0f12;
+        font-family: 'Tajawal', sans-serif;
+        color: #e5e7eb;
+    }
+
+    .prediction-page {
+        padding: 40px;
+        max-width: 1400px;
+        margin: auto;
+    }
+
+    .header h2 {
+        font-size: 32px;
+        text-align: center;
+        color: #9ca3af;
+        margin-bottom: 35px;
+        text-shadow: 0 0 12px #60a5fa;
+    }
+
+    .summary-card {
+        background: linear-gradient(to bottom right, #1e293b, #0f172a);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .summary-label {
+        font-size: 16px;
+        color: #a5b4fc;
+        margin-bottom: 8px;
+    }
+
+    .summary-value {
+        font-size: 28px;
+        font-weight: bold;
+        color: #38bdf8;
+    }
+
+    .prediction-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+    }
+
+    .card {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 18px;
+        padding: 24px;
+    }
+
+    .card-title {
+        font-size: 18px;
+        margin-bottom: 16px;
+        color: #a5b4fc;
+    }
+
+    .chart-container {
+        width: 100%;
+        height: 280px;
+    }
+
+    /* LEGEND */
+    .legend-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 20px;
+        justify-content: center;
+    }
+
+    .legend-box {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255,255,255,0.04);
+        padding: 6px 12px;
+        border-radius: 12px;
+        font-size: 13px;
+        color: #e5e7eb;
+    }
+
+    .legend-color {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+    }
+
+    /* الدوائر */
+    .circle-layout {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+
+    .main-circle-wrapper {
+        position: relative;
+        width: 220px;
+        height: 220px;
+    }
+
+        .main-circle-wrapper canvas {
+            position: absolute;
+            inset: 0;
+        }
+
+    .main-circle-label {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        pointer-events: none;
+    }
+
+    .main-label {
+        font-size: 15px;
+        color: #a5b4fc;
+    }
+
+    .main-value {
+        font-size: 20px;
+        font-weight: bold;
+        color: #38bdf8;
+    }
+
+    .main-percent {
+        font-size: 14px;
+        color: #9ca3af;
+        margin-top: 4px;
+    }
+
+    .mini-circles {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .mini-circle-wrapper {
+        position: relative;
+        width: 140px;
+        height: 140px;
+    }
+
+        .mini-circle-wrapper canvas {
+            position: absolute;
+            inset: 0;
+        }
+
+    .mini-circle-label {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        pointer-events: none;
+        flex-direction: column;
+    }
+
+    .mini-percent {
+        font-size: 15px;
+        font-weight: bold;
+        color: #38bdf8;
+    }
+
+    /* كروت الأقسام — نسخة B الأصلية */
+    .grid-cards {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap; /* يخليها ما تطلع برا */
+        gap: 20px;
+        justify-content: center; /* يخليها في النص وما تطير يمين */
+    }
+
+    .dept-card {
+        background: linear-gradient(to bottom right, #1e293b, #0f172a);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 16px;
+        padding: 20px;
+        text-align: center;
+        transition: 0.3s ease;
+        text-decoration: none;
+        color: inherit;
+        box-shadow: 0 0 10px rgba(255,255,255,0.04);
+        width: 240px; /* الحجم اللي يصغّر الكرت فعليًا */
+        height: 190px; /* يخليها كلها نفس الارتفاع */
+    }
+
+    .card.full-row {
+    grid-column: 1 / -1;
+    width: 100%;
+    padding: 20px; /* رجّع البادينق عشان العنوان ما يطلع برا */
+}
+        .dept-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0 18px rgba(59,130,246,0.25);
+        }
+
+    .card-icon {
+        font-size: 28px;
+        color: #60a5fa;
+        margin-bottom: 10px;
+    }
+
+    .dept-name {
+        font-size: 16px;
+        color: #a5b4fc;
+        margin-bottom: 6px;
+    }
+
+    .dept-budget {
+        font-size: 20px;
+        font-weight: bold;
+        color: #38bdf8;
+    }
+
+    .button-row {
+        margin-top: 35px;
+    }
+
+    .back-btn {
+        padding: 10px 22px;
+        background: #4b5563;
+        border-radius: 12px;
+        color: white;
+        text-decoration: none;
+    }
+
+        .back-btn:hover {
+            background: #3b82f6;
+        }
+
+</style>

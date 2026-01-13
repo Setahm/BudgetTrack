@@ -1,0 +1,201 @@
+﻿@model List<BudgetTrack.Models.User>
+
+@{
+    ViewData["Title"] = "المستخدمين المنتظرين الموافقة";
+}
+
+<div class="admin-wrapper">
+    <div class="admin-card" id="card">
+
+        <h2 class="admin-title">المستخدمين المنتظرين الموافقة</h2>
+        <p class="admin-subtitle">إدارة طلبات المستخدمين الجدد داخل النظام</p>
+
+        <a href="javascript:history.back()" class="admin-btn secondary mb-3">رجوع</a>
+
+        <div class="table-wrapper">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>الاسم</th>
+                        <th>الإيميل</th>
+                        <th>الشركة</th>
+                        <th>تاريخ التسجيل</th>
+                        <th>إجراء</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (Model.Any())
+                    {
+                        foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>@user.Name</td>
+                                <td>@user.Email</td>
+                                <td>@user.Company?.Name</td>
+                                <td>@user.CreatedAt.ToString("yyyy-MM-dd")</td>
+
+                                <td>
+                                    <a asp-action="ApproveUser" asp-route-id="@user.Id"
+                                       class="table-btn approve">✔ قبول</a>
+
+                                    <a asp-action="RejectUser" asp-route-id="@user.Id"
+                                       class="table-btn reject"
+                                       onclick="return confirm('هل تريد رفض هذا المستخدم؟');">
+                                        ✖ رفض
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5" class="empty-row">
+                                لا يوجد مستخدمين ينتظرون الموافقة
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("card").classList.add("loaded");
+        });
+    </script>
+}
+
+<style>
+
+    body {
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        background-size: 200% 200%;
+        font-family: 'Tajawal', sans-serif;
+        color: white;
+    }
+
+    .admin-wrapper {
+        min-height: calc(100vh - 95px - 180px);
+        padding: 25px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .admin-card {
+        width: 100%;
+        max-width: 1100px;
+        background: rgba(255,255,255,0.06);
+        padding: 32px;
+        border-radius: 20px;
+        backdrop-filter: blur(14px);
+        border: 1px solid rgba(255,255,255,0.18);
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+        transition: 0.6s ease;
+    }
+
+        .admin-card.loaded {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+    .admin-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #38bdf8;
+        text-align: center;
+        margin-bottom: 6px;
+    }
+
+    .admin-subtitle {
+        text-align: center;
+        color: #cbd5e1;
+        margin-bottom: 25px;
+    }
+
+    .admin-btn {
+        display: inline-block;
+        padding: 10px 18px;
+        border-radius: 14px;
+        font-size: 15px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.3s;
+        margin-bottom: 15px;
+    }
+
+        .admin-btn.secondary {
+            background: rgba(255,255,255,0.15);
+            color: #e2e8f0;
+        }
+
+            .admin-btn.secondary:hover {
+                background: rgba(255,255,255,0.25);
+            }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        color: white;
+    }
+
+        .admin-table thead {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .admin-table th {
+            padding: 14px;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .admin-table td {
+            padding: 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+
+    .table-btn {
+        padding: 6px 12px;
+        border-radius: 10px;
+        font-size: 14px;
+        text-decoration: none;
+        margin-left: 6px;
+        transition: 0.3s;
+    }
+
+        .table-btn.approve {
+            background: #4ade80;
+            color: #0f172a;
+        }
+
+            .table-btn.approve:hover {
+                background: #86efac;
+            }
+
+        .table-btn.reject {
+            background: #ef4444;
+            color: white;
+        }
+
+            .table-btn.reject:hover {
+                background: #dc2626;
+            }
+
+    .empty-row {
+        text-align: center;
+        padding: 20px;
+        color: #94a3b8;
+    }
+
+</style>

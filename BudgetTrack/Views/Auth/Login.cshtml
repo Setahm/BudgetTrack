@@ -1,0 +1,266 @@
+﻿@{
+    ViewData["Title"] = "تسجيل الدخول";
+}
+
+<div class="auth-wrapper">
+    <div class="auth-card" id="card">
+
+        <!-- عنوان ترحيبي -->
+        <h2 class="auth-title">مرحبًا بعودتك</h2>
+        <p class="auth-subtitle">سجّل الدخول إلى حسابك في BudgetTrack</p>
+
+        <form asp-action="Login" asp-controller="Auth" method="post">
+            @Html.AntiForgeryToken()
+
+            <!-- البريد -->
+            <div class="auth-group">
+                <label>البريد الإلكتروني</label>
+                <input type="email" name="email" placeholder="you@company.com" required />
+            </div>
+
+            <!-- كلمة المرور -->
+            <div class="auth-group">
+                <label>كلمة المرور</label>
+                <input type="password" name="password" required />
+
+                <div class="forgot-wrapper">
+                    <a href="#" class="forgot-link">نسيت كلمة المرور؟</a>
+                </div>
+            </div>
+
+            <!-- تذكرني -->
+            <div class="auth-options">
+                <label>
+                    <input type="checkbox" name="remember" />
+                    تذكرني
+                </label>
+            </div>
+
+            <!-- زر الدخول -->
+            <button type="submit" class="uiverse-btn">
+                دخول <i class="fas fa-arrow-left" style="margin-right:8px;"></i>
+            </button>
+        </form>
+
+        <!-- رسالة خطأ -->
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger mt-3">@TempData["Error"]</div>
+        }
+
+        <!-- روابط أسفل -->
+        <div class="auth-footer">
+            <p>ليس لديك حساب؟ <a href="/Auth/Register">أنشئ حساب الآن</a></p>
+
+            <div class="security-note">
+                <i class="fas fa-shield-halved" style="color:#22c55e;"></i>
+                <span>أمان على مستوى المؤسسات</span>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const card = document.getElementById("card");
+            card.classList.add("loaded");
+
+            document.body.style.backgroundPosition = "100% 50%";
+            setTimeout(() => {
+                document.body.style.backgroundPosition = "0% 50%";
+            }, 4000);
+        });
+    </script>
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        background-size: 200% 200%;
+        transition: background-position 8s ease;
+        font-family: 'Tajawal', sans-serif;
+        color: white;
+    }
+
+    .auth-wrapper {
+        min-height: calc(100vh - 95px - 180px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .auth-card {
+        background: rgba(255,255,255,0.05);
+        padding: 32px;
+        border-radius: 20px;
+        backdrop-filter: blur(14px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.35);
+        width: 100%;
+        max-width: 440px;
+        opacity: 0;
+        transform: translateY(18px) scale(0.95);
+        transition: 0.6s ease;
+        text-align: center;
+    }
+
+        .auth-card.loaded {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+    .auth-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        border: 2px solid #38bdf8;
+        color: #38bdf8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        font-weight: 700;
+        margin: 0 auto 15px;
+    }
+
+    .auth-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #38bdf8;
+        margin-bottom: 6px;
+    }
+
+    .auth-subtitle {
+        font-size: 15px;
+        color: #cbd5e1;
+        margin-bottom: 20px;
+    }
+
+    .auth-group {
+        margin-bottom: 14px;
+        text-align: right;
+    }
+
+        .auth-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 16px;
+            color: #e2e8f0;
+        }
+
+        .auth-group input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 14px;
+            border: none;
+            background: #e2e8f0;
+            color: black;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+            box-sizing: border-box;
+        }
+
+            .auth-group input:focus {
+                box-shadow: 0 0 12px rgba(56,189,248,0.5);
+                transform: scale(1.02);
+            }
+
+    .forgot-wrapper {
+        margin-top: 6px;
+        text-align: right;
+    }
+
+    .forgot-link {
+        font-size: 14px;
+        color: #94a3b8;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+        .forgot-link:hover {
+            color: #38bdf8;
+        }
+
+    .auth-options {
+        margin-bottom: 10px;
+        font-size: 14px;
+        color: #e2e8f0;
+        text-align: right;
+    }
+
+        .auth-options input {
+            margin-left: 6px;
+        }
+
+    .uiverse-btn {
+        width: 100%;
+        padding: 14px;
+        margin-top: 10px;
+        border: none;
+        border-radius: 14px;
+        cursor: pointer;
+        background: linear-gradient(135deg, #38bdf8, #7dd3fc);
+        color: #0f172a;
+        font-size: 18px;
+        font-weight: 700;
+        transition: 0.3s;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .uiverse-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(56,189,248,0.35);
+        }
+
+        .uiverse-btn::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            background: rgba(255,255,255,0.25);
+            opacity: 0;
+            transition: 0.4s;
+        }
+
+        .uiverse-btn:hover::after {
+            opacity: 1;
+        }
+
+    .alert {
+        margin-top: 15px;
+        padding: 12px;
+        border-radius: 10px;
+        font-size: 15px;
+    }
+
+    .alert-danger {
+        background: rgba(255, 0, 0, 0.2);
+        color: #ffb3b3;
+    }
+
+    .auth-footer {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #cbd5e1;
+    }
+
+        .auth-footer a {
+            color: #38bdf8;
+            text-decoration: none;
+        }
+
+    .security-note {
+        margin-top: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        color: #22c55e;
+    }
+</style>

@@ -18,10 +18,6 @@ namespace BudgetTrack.Controllers
             _context = context;
             _predictionService = predictionService;
         }
-
-        // ============================================================
-        // 1) الدخول للوحة التحكم باستخدام CompanyId من الجلسة
-        // ============================================================
         public IActionResult Index()
         {
             var companyIdString = HttpContext.Session.GetString("CompanyId");
@@ -31,10 +27,6 @@ namespace BudgetTrack.Controllers
 
             return RedirectToAction("CompanyHome", new { id = companyId });
         }
-
-        // ============================================================
-        // 2) الصفحة الرئيسية للشركة
-        // ============================================================
         public IActionResult CompanyHome(int id)
         {
             var company = _context.Companies
@@ -47,9 +39,6 @@ namespace BudgetTrack.Controllers
             return View(company);
         }
 
-        // ============================================================
-        // 3) تفاصيل الشركة حسب السنة
-        // ============================================================
         public IActionResult CompanyDetails(int id, int year = 2026)
         {
             var company = _context.Companies
@@ -96,10 +85,6 @@ namespace BudgetTrack.Controllers
 
             return View(viewModel);
         }
-
-        // ============================================================
-        // 4) صفحة التنبؤ للسنة القادمة — Dashboard Prediction
-        // ============================================================
         public IActionResult Predictions(int id)
         {
             var company = _context.Companies
@@ -109,7 +94,7 @@ namespace BudgetTrack.Controllers
             if (company == null)
                 return NotFound();
 
-            // تشغيل التنبؤ الهجين
+            // تشغيل التنبؤ 
             var predictions = _predictionService.PredictNextYearBudgetPerDepartment(id);
 
             // تجهيز البيانات للعرض

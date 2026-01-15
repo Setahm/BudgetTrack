@@ -65,8 +65,6 @@ namespace BudgetTrack.Services
 
                         _context.Predictions.Add(prediction);
                     }
-
-                    // ❗❗❗ تم حذف continue هنا
                 }
 
                 float avg = Convert.ToSingle(expenses.Average(e => e.Amount));

@@ -3,7 +3,6 @@
 
 <div class="dashboard">
 
-    <!-- العنوان -->
     <div class="header fade-in">
         <h2>تفاصيل الشركة</h2>
     </div>
@@ -100,9 +99,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script>
-    // =======================
+    
     //  تصدير Excel
-    // =======================
     document.getElementById("exportExcel").addEventListener("click", function () {
 
         var table = document.getElementById("deptTable");
@@ -110,9 +108,7 @@
         XLSX.writeFile(wb, "تفاصيل_الأقسام.xlsx");
     });
 
-    // =======================
     //  التشارت
-    // =======================
     const ctx = document.getElementById('budgetChart').getContext('2d');
 
     new Chart(ctx, {

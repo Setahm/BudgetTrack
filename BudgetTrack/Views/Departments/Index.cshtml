@@ -2,13 +2,11 @@
 
 <div class="page-container fade-in">
 
-    <!-- العنوان + زر إضافة -->
     <div class="header-row">
         <h2 class="page-title">الأقسام</h2>
         <a href="@Url.Action("Create")" class="add-btn">+ إضافة قسم جديد</a>
     </div>
 
-    <!-- كرت عدد الأقسام -->
     <div class="summary-card fade-in">
         <p class="summary-label">عدد الأقسام</p>
         <p class="summary-value">@Model.Count()</p>
@@ -23,7 +21,6 @@
     }
     else
     {
-        <!-- جدول داخل كرت واسع -->
         <div class="table-wrapper fade-in">
             <table class="modern-table">
                 <thead>
@@ -52,7 +49,6 @@
         </div>
     }
 
-    <!-- زر الرجوع -->
     <div class="back-row fade-in">
         <a href="@Url.Action("Index", "CompanyDashboard")" class="back-btn">رجوع للوحة التحكم</a>
     </div>

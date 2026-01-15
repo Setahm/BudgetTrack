@@ -5,20 +5,17 @@
 <div class="auth-wrapper">
     <div class="auth-card" id="card">
 
-        <!-- عنوان ترحيبي -->
         <h2 class="auth-title">مرحبًا بعودتك</h2>
         <p class="auth-subtitle">سجّل الدخول إلى حسابك في BudgetTrack</p>
 
         <form asp-action="Login" asp-controller="Auth" method="post">
             @Html.AntiForgeryToken()
 
-            <!-- البريد -->
             <div class="auth-group">
                 <label>البريد الإلكتروني</label>
                 <input type="email" name="email" placeholder="you@company.com" required />
             </div>
 
-            <!-- كلمة المرور -->
             <div class="auth-group">
                 <label>كلمة المرور</label>
                 <input type="password" name="password" required />
@@ -28,7 +25,6 @@
                 </div>
             </div>
 
-            <!-- تذكرني -->
             <div class="auth-options">
                 <label>
                     <input type="checkbox" name="remember" />
@@ -36,19 +32,16 @@
                 </label>
             </div>
 
-            <!-- زر الدخول -->
             <button type="submit" class="uiverse-btn">
                 دخول <i class="fas fa-arrow-left" style="margin-right:8px;"></i>
             </button>
         </form>
 
-        <!-- رسالة خطأ -->
         @if (TempData["Error"] != null)
         {
             <div class="alert alert-danger mt-3">@TempData["Error"]</div>
         }
 
-        <!-- روابط أسفل -->
         <div class="auth-footer">
             <p>ليس لديك حساب؟ <a href="/Auth/Register">أنشئ حساب الآن</a></p>
 

@@ -18,7 +18,7 @@ namespace BudgetTrack.Filters
 
             var userRole = httpContext.Session.GetString("UserRole");
 
-            // إذا ما فيه جلسة أو الدور غير مطابق → رجّع المستخدم
+            // إذا ما فيه جلسة أو الدور غير مطابق يرجّع المستخدم
             if (string.IsNullOrEmpty(userRole) || userRole != _role)
             {
                 context.Result = new RedirectToActionResult("Login", "Auth", null);

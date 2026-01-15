@@ -14,9 +14,8 @@ namespace BudgetTrack.Controllers
             _context = context;
         }
 
-        // ================================
+       
         // GET: Register
-        // ================================
         [HttpGet]
         public IActionResult Register()
         {
@@ -29,9 +28,7 @@ namespace BudgetTrack.Controllers
             return View();
         }
 
-        // ================================
         // POST: Register
-        // ================================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Register(User user)
@@ -41,7 +38,7 @@ namespace BudgetTrack.Controllers
             user.IsApproved = false;
             user.CreatedAt = DateTime.Now;
 
-            // إزالة الخصائص التي لا تأتي من الفورم
+            // إزالة الخصائص اللي ماتجي من الفورم
             ModelState.Remove("Company");
             ModelState.Remove("Role");
 
@@ -71,18 +68,14 @@ namespace BudgetTrack.Controllers
             return RedirectToAction("Login");
         }
 
-        // ================================
         // GET: Login
-        // ================================
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
 
-        // ================================
         // POST: Login
-        // ================================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Login(string email, string password)
@@ -102,11 +95,11 @@ namespace BudgetTrack.Controllers
                 return RedirectToAction("Login");
             }
 
-            // 🔥 أهم شيء — حفظ بيانات المستخدم في الجلسة
+            // أهم شيء — حفظ بيانات المستخدم في الجلسة
             HttpContext.Session.SetString("UserId", user.Id.ToString());
             HttpContext.Session.SetString("UserRole", user.Role);
-            HttpContext.Session.SetString("UserEmail", user.Email);   // ← هذا اللي ناقص
-            HttpContext.Session.SetString("UserName", user.Name);     // ← وهذا اختياري
+            HttpContext.Session.SetString("UserEmail", user.Email);   
+            HttpContext.Session.SetString("UserName", user.Name);     
 
             if (user.CompanyId.HasValue)
             {
@@ -118,13 +111,12 @@ namespace BudgetTrack.Controllers
 
             return RedirectToAction("Index", "CompanyDashboard");
         }
-        // ================================
+       
         // Logout
-        // ================================
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
-            return RedirectToAction("Login");
+            return RedirectToAction("Index", "Home"); 
         }
     }
 }

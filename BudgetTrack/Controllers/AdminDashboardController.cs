@@ -13,9 +13,7 @@ public class AdminDashboardController : Controller
         _context = context;
     }
 
-    // ================================
     //  Dashboard + Pending Count
-    // ================================
     [AuthFilter]
     [RoleFilter("Admin")]
     public IActionResult Index()
@@ -31,9 +29,7 @@ public class AdminDashboardController : Controller
         return View(companies);
     }
 
-    // ================================
     //  Pending Users Page
-    // ================================
     [AuthFilter]
     [RoleFilter("Admin")]
     public IActionResult PendingUsers()
@@ -46,9 +42,7 @@ public class AdminDashboardController : Controller
         return View(users);
     }
 
-    // ================================
     //  Approve User
-    // ================================
     [AuthFilter]
     [RoleFilter("Admin")]
     public IActionResult ApproveUser(int id)
@@ -64,9 +58,7 @@ public class AdminDashboardController : Controller
         return RedirectToAction("PendingUsers");
     }
 
-    // ================================
     //  Reject User
-    // ================================
     [AuthFilter]
     [RoleFilter("Admin")]
     public IActionResult RejectUser(int id)
@@ -82,9 +74,8 @@ public class AdminDashboardController : Controller
         return RedirectToAction("PendingUsers");
     }
 
-    // ================================
+ 
     //  CRUD: Companies
-    // ================================
     [AuthFilter]
     [RoleFilter("Admin")]
     public IActionResult Create()

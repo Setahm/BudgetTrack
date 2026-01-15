@@ -12,8 +12,6 @@
     </div>
 
     <div class="prediction-grid fade-in">
-
-        <!-- تشارت الأعمدة (النسخة المعدّلة اللي تبينها) -->
         <div class="card">
             <p class="card-title">توقعات الأقسام</p>
             <div class="chart-container">
@@ -21,11 +19,9 @@
             </div>
         </div>
 
-        <!-- الدوائر (إضافة فقط بدون لمس أي شيء ثاني) -->
         <div class="card">
             <p class="card-title">توزيع الميزانية المتوقعة</p>
 
-            <!-- LEGEND فوق -->
             <div class="legend-row">
                 @for (int i = 0; i < Model.Count; i++)
                 {
@@ -42,7 +38,6 @@
 
             <div class="circle-layout">
 
-                <!-- الدائرة الكبيرة -->
                 <div class="main-circle-wrapper">
                     <canvas id="totalCircle"></canvas>
                     <div class="main-circle-label">
@@ -52,7 +47,6 @@
                     </div>
                 </div>
 
-                <!-- الدوائر الصغيرة -->
                 <div class="mini-circles">
                     @for (int i = 0; i < Model.Count; i++)
                     {
@@ -68,7 +62,6 @@
             </div>
         </div>
 
-        <!-- كروت الأقسام (نسخة B الأصلية بدون أي تغيير) -->
         <div class="card full-row">
             <p class="card-title">تفاصيل التوقعات لكل قسم</p>
 
@@ -102,10 +95,6 @@
     const labels = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Select(m => m.DepartmentName)));
     const data = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Select(m => m.PredictedBudget)));
     const total = @ViewBag.TotalCompanyPrediction ?? 0;
-
-    // ============================
-    //  تشارت الأعمدة (النسخة المعدّلة)
-    // ============================
     new Chart(document.getElementById('deptChart'), {
         type: 'bar',
         data: {
@@ -178,9 +167,6 @@
         }
     });
 
-    // ============================
-    //  الدائرة الكبيرة
-    // ============================
     new Chart(document.getElementById('totalCircle'), {
         type: 'doughnut',
         data: {
@@ -196,9 +182,6 @@
         }
     });
 
-    // ============================
-    //  الدوائر الصغيرة
-    // ============================
     const colors = [
         '#3b82f6', '#10b981', '#06b6d4',
         '#facc15', '#ef4444', '#9ca3af'
@@ -232,7 +215,6 @@
 
 <style>
 
-    /* كل شيء هنا هو نسخة B الأصلية — بدون أي تغيير */
     body {
         background: #0f0f12;
         font-family: 'Tajawal', sans-serif;
@@ -404,13 +386,13 @@
         color: #38bdf8;
     }
 
-    /* كروت الأقسام — نسخة B الأصلية */
+    /* كروت الأقسام   */
     .grid-cards {
         width: 100%;
         display: flex;
-        flex-wrap: wrap; /* يخليها ما تطلع برا */
+        flex-wrap: wrap; 
         gap: 20px;
-        justify-content: center; /* يخليها في النص وما تطير يمين */
+        justify-content: center;
     }
 
     .dept-card {
@@ -423,14 +405,14 @@
         text-decoration: none;
         color: inherit;
         box-shadow: 0 0 10px rgba(255,255,255,0.04);
-        width: 240px; /* الحجم اللي يصغّر الكرت فعليًا */
-        height: 190px; /* يخليها كلها نفس الارتفاع */
+        width: 240px; 
+        height: 190px;
     }
 
     .card.full-row {
     grid-column: 1 / -1;
     width: 100%;
-    padding: 20px; /* رجّع البادينق عشان العنوان ما يطلع برا */
+    padding: 20px; 
 }
         .dept-card:hover {
             transform: translateY(-4px);

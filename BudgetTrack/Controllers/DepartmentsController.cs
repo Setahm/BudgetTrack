@@ -13,9 +13,7 @@ namespace BudgetTrack.Controllers
             _context = context;
         }
 
-        // ============================
         // GET: Index
-        // ============================
         public IActionResult Index()
         {
             var companyIdString = HttpContext.Session.GetString("CompanyId");
@@ -32,9 +30,7 @@ namespace BudgetTrack.Controllers
             return View(departments);
         }
 
-        // ============================
         // GET: Create
-        // ============================
         public IActionResult Create()
         {
             var companyIdString = HttpContext.Session.GetString("CompanyId");
@@ -50,9 +46,8 @@ namespace BudgetTrack.Controllers
             });
         }
 
-        // ============================
-        // POST: Create
-        // ============================
+       
+        // POST: Create 
         [HttpPost]
         public IActionResult Create(Department model)
         {
@@ -77,9 +72,8 @@ namespace BudgetTrack.Controllers
             }
         }
 
-        // ============================
+        
         // GET: Edit
-        // ============================
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -93,9 +87,7 @@ namespace BudgetTrack.Controllers
             return View(department);
         }
 
-        // ============================
         // POST: Edit
-        // ============================
         [HttpPost]
         public async Task<IActionResult> Edit(int id, Department model)
         {
@@ -120,9 +112,8 @@ namespace BudgetTrack.Controllers
             }
         }
 
-        // ============================
+       
         // GET: Delete
-        // ============================
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -137,9 +128,7 @@ namespace BudgetTrack.Controllers
             return View(department);
         }
 
-        // ============================
         // POST: DeleteConfirmed
-        // ============================
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

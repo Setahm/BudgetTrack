@@ -30,9 +30,7 @@ public partial class BudgetTrackDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // ============================
         // Company
-        // ============================
         modelBuilder.Entity<Company>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Companie__3214EC0714D80A49");
@@ -40,14 +38,10 @@ public partial class BudgetTrackDbContext : DbContext
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetime())");
             entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.Name).HasMaxLength(200);
-
-            // ✨ العمود الجديد
             entity.Property(e => e.PeriodType).HasMaxLength(20);
         });
 
-        // ============================
         // Department
-        // ============================
         modelBuilder.Entity<Department>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Departme__3214EC0715BD80CD");
@@ -55,20 +49,15 @@ public partial class BudgetTrackDbContext : DbContext
             entity.Property(e => e.AnnualBudget).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetime())");
             entity.Property(e => e.Name).HasMaxLength(200);
-
-            // ✨ الأعمدة الجديدة
             entity.Property(e => e.Year);
             entity.Property(e => e.PeriodType).HasMaxLength(20);
-
             entity.HasOne(d => d.Company).WithMany(p => p.Departments)
                 .HasForeignKey(d => d.CompanyId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Departments_Companies");
         });
 
-        // ============================
         // Expense
-        // ============================
         modelBuilder.Entity<Expense>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Expenses__3214EC070C61AEB8");
@@ -83,9 +72,7 @@ public partial class BudgetTrackDbContext : DbContext
                 .HasConstraintName("FK_Expenses_Departments");
         });
 
-        // ============================
         // Prediction
-        // ============================
         modelBuilder.Entity<Prediction>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Predicti__3214EC0700D67C61");
@@ -99,9 +86,7 @@ public partial class BudgetTrackDbContext : DbContext
                 .HasConstraintName("FK_Predictions_Departments");
         });
 
-        // ============================
         // User
-        // ============================
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Users__3214EC07BDC417B5");

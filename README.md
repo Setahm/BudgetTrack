@@ -1,4 +1,4 @@
-# 📊BudgetTrack Expense & Budget Management System
+# 📊BudgetTrack
 
 A web-based platform that helps companies organize their expenses and manage their budget with clarity and ease.  
 The system centralizes financial data in one place and presents it through tables, dashboards, and interactive charts.  
